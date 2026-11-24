@@ -17,4 +17,5 @@ MicroAST
 adain_wrapper.py
 AdaIN.md
 style_transfer_wrappers.py
+datasets/
 
