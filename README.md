@@ -1,3 +1,7 @@
+Do CNNs rely on texture rather than shape?
+
+-> Ils sont biasié par la texture
+
 Idée : 
 
 Tester si un cnn classe toujours bien (genre resnet de image net ou autre dataset) après avoir passé l'image dans 
