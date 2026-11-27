@@ -1,56 +1,59 @@
-Do CNNs rely on texture rather than shape?
+# Do CNNs Rely on Texture Rather Than Shape?
 
--> Ils sont biasié par la texture
+## Question
 
-Idée : 
+**Quel est l'impact du champ réceptif sur le biais de texture des CNN ?**
 
-Tester si un cnn classe toujours bien (genre resnet de image net ou autre dataset) après avoir passé l'image dans 
-ADAIN-style transfert :
+On se place dans le cadre de [REFINED-BIAS](https://arxiv.org/pdf/2603.10834).
 
-On va prendre un chat et lui appliquer la texture d'un elephant pour voir si le modele le classe toujours comme chat ou pas
+On remplace le [cue-conflict](https://arxiv.org/pdf/1811.12231) par un jeu de données séparé.
 
-On peut aussi tester avec une image des contours, la silhouette, ou uniquement de la texture.
+L'idée sous-jacente : il existe une corrélation entre la taille du champ réceptif (RF) et le biais de texture des CNN.
 
+## Plan
 
-On va tester sur 16-classes image-net
+On va tester plusieurs hypothèses (en fonction de notre temps) :
 
-```bibtext
+1. Sur des CNN entraînés sur ImageNet-1k, la taille du RF effectif est corrélée positivement à `Shape-Sens` et négativement à `Texture-Sens`, y compris pour les CNN modernes.
+2. À recette d'entraînement comparable, les CNN à grands noyaux (RepLKNet, UniRepLKNet, ConvNeXt) ont une `Shape-Sens` plus élevée que ResNet-50.
+3. Le `cue-conflict` et `REFINED-BIAS` classent les modèles différemment ($\tau$ de Kendall faible).
+4. Dans un CNN contrôlé, faire varier uniquement la taille des noyaux (ou une convolution *depthwise*, ou la dilatation) modifie `Shape-Sens`. Si R5 (RF large, petit noyau) se comporte comme R3, c'est le RF qui compte, pas le noyau.
 
-@article{geirhos2018imagenet,
-  title={ImageNet-trained CNNs are biased towards texture; increasing shape bias improves accuracy and robustness},
-  author={Geirhos, Robert and Rubisch, Patricia and Michaelis, Claudio and Bethge, Matthias and Wichmann, Felix A and Brendel, Wieland},
-  journal={arXiv preprint arXiv:1811.12231},
-  year={2018}
-}
+*(Les étapes 3 et 4 sont interchangeables en fonction du temps.)*
 
+### I. Sur des CNN entraînés sur ImageNet-1k, la taille du RF effectif est corrélée positivement à `Shape-Sens` et négativement à `Texture-Sens`, y compris pour les CNN modernes
 
-
-@article{kyrkou2024structured,
-  title={Toward Efficient Convolutional Neural Networks With Structured Ternary Patterns},
-  author={Kyrkou, Christos},
-  journal={IEEE Transactions on Neural Networks and Learning Systems},
-  year={2024},
-  doi={10.1109/TNNLS.2024.3380827}
-}
+Définir les CNN modernes, réutiliser le cadre expérimental de `REFINED-BIAS` et constater la corrélation entre le RF et le biais de texture.
 
 
-```
+### II
 
 
-Mener l'étude sur du ConvNexT
+WIP
+
+### III
+
+WIP
+
+#### IV
+WIP
 
 
+## Glossaire
 
-![alt text](doc/image.png)
+* **`cue-conflict`** : protocole de Geirhos et al. (2019) qui superpose la texture d'une classe sur la forme d'une autre (via transfert de style) pour mesurer si un modèle prédit plutôt selon la forme ou la texture.
+* **`REFINED-BIAS`** : benchmark de Kim et al. (2026) qui remplace le `cue-conflict` par deux jeux d'images séparés (contours seuls pour la forme, mosaïques de patchs mélangés pour la texture) évalués par rang moyen (MRR) sur les 1 000 classes.
+* **`Shape-Sens`** : sensibilité à la forme mesurée par `REFINED-BIAS` sur des images réduites aux contours de l'objet.
+* **`Texture-Sens`** : sensibilité à la texture mesurée par `REFINED-BIAS` sur des mosaïques de patchs où la structure globale est détruite.
 
+## Sources
 
+* **REFINED-BIAS** : Kim et al., *On the Reliability of Cue Conflict and Beyond*, 2026 — [arXiv:2603.10834](https://arxiv.org/abs/2603.10834) · [GitHub](https://github.com/PumjunKim/REFINED-BIAS)
+* **Cue-conflict** : Geirhos et al., *ImageNet-trained CNNs are biased towards texture; increasing shape bias improves accuracy and robustness*, ICLR 2019 — [arXiv:1811.12231](https://arxiv.org/abs/1811.12231)
+* **Effective Receptive Field (ERF)** : Luo et al., *Understanding the Effective Receptive Field in Deep CNNs*, NeurIPS 2016
+* **ConvNeXt** : Liu et al., *A ConvNet for the 2020s*, CVPR 2022 — [arXiv:2201.03545](https://arxiv.org/abs/2201.03545)
+* **RepLKNet** : Ding et al., *Scaling Up Your Kernels to 31×31*, CVPR 2022 — [GitHub](https://github.com/DingXiaoH/RepLKNet-pytorch)
+* **UniRepLKNet** : Ding et al., *UniRepLKNet*, CVPR 2024 — [GitHub](https://github.com/AILab-CVC/UniRepLKNet)
+* **Plan détaillé du projet** : [doc/plan.md](doc/plan.md)
 
-Idéé 2 :
-Faire le lien avec les ondellettes et montrer que les ondelletes on un biais de texture
-
-Comparer avec des Vit ou des architecture plus SOTA
-
-Idée 3:
-
-Afficher les cartes de chaleur des Convolution sur les images pour vori quels sont le zones activé par les CNN.
 
